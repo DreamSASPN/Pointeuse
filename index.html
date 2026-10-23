@@ -36,7 +36,7 @@
             align-items: center;
         }
 
-        /* HEADER */
+        /* HEADER OFFICIEL */
         header {
             width: 100%;
             max-width: 1100px;
@@ -87,7 +87,7 @@
         .status-on { background: rgba(16, 185, 129, 0.2); color: var(--green); border: 1px solid var(--green); }
         .status-pause { background: rgba(245, 158, 11, 0.2); color: var(--orange); border: 1px solid var(--orange); }
 
-        /* TABS NAV */
+        /* ONGLETS NAVIGATION */
         .nav-tabs {
             width: 100%;
             max-width: 1100px;
@@ -121,7 +121,7 @@
             border-color: var(--accent-gold);
         }
 
-        /* MAIN CONTENT CONTAINER */
+        /* CONTENEUR PRINCIPAL */
         .tab-content {
             width: 100%;
             max-width: 1100px;
@@ -142,7 +142,7 @@
             grid-column: span 2;
         }
 
-        /* CARDS */
+        /* CARTES ET COMPOSANTS */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -166,7 +166,7 @@
             padding: 20px;
         }
 
-        /* FORMS */
+        /* FORMULAIRES */
         .form-group {
             margin-bottom: 15px;
         }
@@ -195,7 +195,7 @@
             border-color: var(--accent-blue);
         }
 
-        /* TIMECARD TIMER */
+        /* CHRONOMÈTRE */
         .timer-display {
             font-size: 48px;
             font-weight: 800;
@@ -231,7 +231,7 @@
         .btn-blue { background: var(--accent-blue); color: #fff; }
         .btn-gold { background: var(--accent-gold); color: #000; }
 
-        /* TABLES */
+        /* TABLEAUX ET HISTORIQUE */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -255,14 +255,14 @@
             background: rgba(255,255,255,0.02);
         }
 
-        /* LOGIN EM MODAL/BOX */
+        /* Espace Connexion EM */
         .em-login-box {
             max-width: 400px;
             margin: 40px auto;
             text-align: center;
         }
 
-        /* STATS SUMMARY IN EM */
+        /* Cartes Statistiques EM */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -308,18 +308,17 @@
         </div>
     </header>
 
-    <!-- ONGLETS DE NAVIGATION -->
+    <!-- ONGLETS -->
     <div class="nav-tabs">
         <button class="tab-btn active" onclick="switchTab('agent-tab')">👮 Espace Agent / Pointeuse</button>
-        <button class="tab-btn" onclick="switchTab('history-tab')">📜 Mon Historique de Service</button>
+        <button class="tab-btn" onclick="switchTab('history-tab')">📜 Mon Historique Personnel</button>
         <button class="tab-btn em-tab" onclick="switchTab('em-tab')">🔒 Accès État-Major</button>
     </div>
 
-    <!-- 1. ESPACE AGENT & POINTEUSE -->
+    <!-- 1. ESPACE AGENT -->
     <div id="agent-tab" class="tab-content active">
         <div class="grid-container">
             
-            <!-- IDENTIFICATION AGENT -->
             <div class="card">
                 <div class="card-header">👤 Identification Officier</div>
                 <div class="card-body">
@@ -351,9 +350,8 @@
                 </div>
             </div>
 
-            <!-- UNITE ET COÉQUIPIER -->
             <div class="card">
-                <div class="card-header">🚓 Configuration de Patrouille</div>
+                <div class="card-header">计时 Configuration de Patrouille</div>
                 <div class="card-body">
                     <div class="form-group">
                         <label for="unit-type">Indicatif Unité</label>
@@ -362,7 +360,7 @@
                             <option value="LINCOLN">LINCOLN (Patrouille Solo)</option>
                             <option value="MARY">MARY (Unité Moto)</option>
                             <option value="HENRY">HENRY (Unité Aérienne)</option>
-                            <option value="TANGO">TANGO (Unité Spéciale / Interception)</option>
+                            <option value="TANGO">TANGO (Unité Spéciale)</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -370,13 +368,12 @@
                         <input type="text" id="unit-partner" placeholder="Ex: Jane Doe (103) / Aucun">
                     </div>
                     <div class="form-group">
-                        <label for="service-notes">Notes / Objectif de Patrouille</label>
-                        <input type="text" id="service-notes" placeholder="Ex: Surveillance secteur Paleto Bay / Contrôles routiers">
+                        <label for="service-notes">Notes de Patrouille</label>
+                        <input type="text" id="service-notes" placeholder="Ex: Contrôles Paleto Bay">
                     </div>
                 </div>
             </div>
 
-            <!-- CHRONOMÈTRE DE SERVICE -->
             <div class="card full-width">
                 <div class="card-header">⏱️ Horodateur de Service En Direct</div>
                 <div class="card-body">
@@ -389,7 +386,6 @@
                 </div>
             </div>
 
-            <!-- GENERATEUR DISCORD -->
             <div class="card full-width">
                 <div class="card-header">📋 Export Rapport Discord</div>
                 <div class="card-body">
@@ -402,12 +398,12 @@
         </div>
     </div>
 
-    <!-- 2. HISTORIQUE AGENT (PERSISTANT) -->
+    <!-- 2. HISTORIQUE PERSONNEL AGENT -->
     <div id="history-tab" class="tab-content">
         <div class="card full-width">
-            <div class="card-header">📜 Historique de mes Prises de Service</div>
+            <div class="card-header">📜 Historique Personnel des Prises de Service</div>
             <div class="card-body">
-                <table id="agent-history-table">
+                <table>
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -426,47 +422,49 @@
         </div>
     </div>
 
-    <!-- 3. ESPACE ÉTAT-MAJOR (MOT DE PASSE 1499) -->
+    <!-- 3. ESPACE ÉTAT-MAJOR (MOT DE PASSE: 1499) -->
     <div id="em-tab" class="tab-content">
         
-        <!-- ECRAN DE CONNEXION EM -->
+        <!-- CONNEXION EM -->
         <div id="em-login-view" class="card em-login-box">
             <div class="card-header" style="justify-content: center;">🔒 Accès Sécurisé Commandement</div>
             <div class="card-body">
                 <div class="form-group">
                     <label for="em-pass">Mot de Passe État-Major</label>
-                    <input type="password" id="em-pass" placeholder="Entrez le code d'accès...">
+                    <input type="password" id="em-pass" placeholder="">
                 </div>
                 <button class="btn btn-gold" style="width: 100%;" onclick="checkEmPassword()">Se Connecter</button>
                 <p id="em-login-error" style="color: var(--red); font-size: 12px; margin-top: 10px; display: none;">Mot de passe incorrect.</p>
             </div>
         </div>
 
-        <!-- TABLEAU DE BORD EM -->
+        <!-- TABLEAU DE BORD EM + HISTORIQUE GLOBAL -->
         <div id="em-dashboard-view" style="display: none;">
             
+            <!-- CARTES DE STATISTIQUES -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div>Total Prises de Service</div>
+                    <div>Prises de Service Enregistrées</div>
                     <div class="value" id="stat-total-shifts">0</div>
                 </div>
                 <div class="stat-card">
-                    <div>Heures Totales Enregistrées</div>
+                    <div>Heures Totales de Service</div>
                     <div class="value" id="stat-total-hours">0h 00m</div>
                 </div>
                 <div class="stat-card">
-                    <div>Agents Différents</div>
+                    <div>Agents Actifs Différents</div>
                     <div class="value" id="stat-total-agents">0</div>
                 </div>
             </div>
 
+            <!-- FILTRES & CONTROLES -->
             <div class="card full-width" style="margin-bottom: 20px;">
                 <div class="card-header" style="justify-content: space-between;">
-                    <span>🔎 Filtres & Exportation des Heures</span>
+                    <span>🔎 Filtres d'Analyse & Gestion des Heures</span>
                     <button class="btn btn-red" style="padding: 4px 10px; font-size: 11px;" onclick="logoutEm()">Déconnexion EM</button>
                 </div>
                 <div class="card-body">
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                         <input type="text" id="filter-agent" placeholder="Filtrer par Nom ou Matricule..." onkeyup="renderEmTable()">
                         <select id="filter-unit" onchange="renderEmTable()">
                             <option value="ALL">Toutes les Unités</option>
@@ -481,8 +479,9 @@
                 </div>
             </div>
 
+            <!-- HISTORIQUE GLOBAL ETAT-MAJOR -->
             <div class="card full-width">
-                <div class="card-header">📋 Registre Centralisé des Services (Tous les Agents)</div>
+                <div class="card-header">📊 HISTORIQUE GLOBAL DE SERVICE — ÉTAT-MAJOR</div>
                 <div class="card-body">
                     <table>
                         <thead>
@@ -492,12 +491,12 @@
                                 <th>Grade</th>
                                 <th>Unité</th>
                                 <th>Début - Fin</th>
-                                <th>Durée</th>
-                                <th>Actions</th>
+                                <th>Durée Totale</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="em-history-tbody">
-                            <!-- Rempli en JS -->
+                            <!-- Rempli dynamiquement en JS -->
                         </tbody>
                     </table>
                 </div>
@@ -508,13 +507,12 @@
     </div>
 
     <script>
-        // --- LOGIQUE JS GLOBALE ---
         let timerInterval = null;
         let seconds = 0;
         let isRunning = false;
         let startTime = null;
 
-        // Charger l'historique depuis LocalStorage
+        // Stockage LocalStorage
         function getShifts() {
             return JSON.parse(localStorage.getItem('sasp_shifts') || '[]');
         }
@@ -526,7 +524,7 @@
         }
 
         function deleteShift(index) {
-            if (confirm("Voulez-vous vraiment supprimer cet enregistrement ?")) {
+            if (confirm("Voulez-vous vraiment supprimer cet enregistrement de l'historique ?")) {
                 const shifts = getShifts();
                 shifts.splice(index, 1);
                 localStorage.setItem('sasp_shifts', JSON.stringify(shifts));
@@ -535,7 +533,7 @@
             }
         }
 
-        // CHRONOMETRE
+        // Timer
         function updateTimerDisplay() {
             const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
             const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
@@ -585,7 +583,6 @@
                 const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
                 const durationFormatted = `${hrs}h ${mins}m`;
 
-                // Sauvegarde
                 const newShift = {
                     date: startTime ? startTime.toLocaleDateString('fr-FR') : new Date().toLocaleDateString('fr-FR'),
                     agent: document.getElementById('agent-name').value,
@@ -602,7 +599,6 @@
                 saveShift(newShift);
                 renderAgentHistory();
 
-                // Reset timer
                 seconds = 0;
                 updateTimerDisplay();
 
@@ -610,11 +606,11 @@
                 badge.innerText = "HORS SERVICE (10-10)";
                 badge.className = "badge-status status-off";
 
-                alert("Fin de service enregistrée avec succès dans l'historique !");
+                alert("Fin de service enregistrée avec succès !");
             }
         }
 
-        // RAPPORT DISCORD
+        // Export Discord
         function generateDiscordReport() {
             const name = document.getElementById('agent-name').value || 'Non renseigné';
             const mat = document.getElementById('agent-matricule').value || '---';
@@ -640,7 +636,7 @@
             }
         }
 
-        // AFFICHAGE HISTORIQUE AGENT
+        // Rendu Historique Agent
         function renderAgentHistory() {
             const shifts = getShifts();
             const tbody = document.getElementById('agent-history-tbody');
@@ -660,7 +656,7 @@
             });
         }
 
-        // ACCES ETAT-MAJOR (CODE: 1499)
+        // Authentification État-Major (Mot de passe: 1499)
         function checkEmPassword() {
             const pass = document.getElementById('em-pass').value;
             if (pass === "1499") {
@@ -679,7 +675,7 @@
             document.getElementById('em-login-error').style.display = 'none';
         }
 
-        // RENDU TABLEAU ETAT-MAJOR ET STATS
+        // Rendu Tableau Historique État-Major
         function renderEmTable() {
             const shifts = getShifts();
             const filterText = document.getElementById('filter-agent').value.toLowerCase();
@@ -709,13 +705,13 @@
                         <td><span style="color: var(--accent-gold);">${s.unit}</span></td>
                         <td>${s.start} - ${s.end}</td>
                         <td><b>${s.durationFormatted}</b></td>
-                        <td><button class="btn btn-red" style="padding: 2px 8px; font-size: 10px;" onclick="deleteShift(${idx})">Supprimer</button></td>
+                        <td><button class="btn btn-red" style="padding: 3px 8px; font-size: 11px;" onclick="deleteShift(${idx})">Supprimer</button></td>
                     `;
                     tbody.appendChild(tr);
                 }
             });
 
-            // Mise à jour Stats
+            // Statistiques calculées
             document.getElementById('stat-total-shifts').innerText = count;
             const h = Math.floor(totalSecs / 3600);
             const m = Math.floor((totalSecs % 3600) / 60);
@@ -723,11 +719,11 @@
             document.getElementById('stat-total-agents').innerText = uniqueAgents.size;
         }
 
-        // EXPORT EXCEL (CSV)
+        // Export Excel CSV
         function exportCSV() {
             const shifts = getShifts();
             if (shifts.length === 0) {
-                alert("Aucune donnée à exporter.");
+                alert("Aucun enregistrement à exporter.");
                 return;
             }
 
@@ -739,13 +735,13 @@
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Heures_SASP_BCSO_${new Date().toLocaleDateString('fr-FR')}.csv`);
+            link.setAttribute("download", `Historique_Service_SASP_${new Date().toLocaleDateString('fr-FR')}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        // NAVIGATION ONGLETS
+        // Changement d'onglets
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -758,7 +754,6 @@
             }
         }
 
-        // Initialisation
         renderAgentHistory();
     </script>
 </body>
