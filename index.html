@@ -3,154 +3,655 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INTRANET & POINTEUSE — SASP NORD / BCSO</title>
+    <title>SASP NORD — Intranet & Pointeuse BCSO</title>
+    <!-- Tailwind CSS pour un design sombre et soigné -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bcso: {
+                            gold: '#d4af37',
+                            goldHover: '#b59226',
+                            dark: '#0b0d10',
+                            card: '#131720',
+                            cardBorder: '#232936',
+                            headerBg: '#1a1f2c',
+                            badge: '#1e2536'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --bg-dark: #0d0f12;
-            --card-bg: #161920;
-            --card-header: #1e222d;
-            --accent-gold: #d4af37;
-            --accent-blue: #3b82f6;
-            --text-primary: #f0f2f5;
-            --text-secondary: #9da5b4;
-            --border: #282e3d;
-            --green: #10b981;
-            --orange: #f59e0b;
-            --red: #ef4444;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-        }
-
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background-color: #0b0d10;
+            color: #f0f2f5;
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0d10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #232936;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d4af37;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex flex-col items-center justify-start">
+
+    <!-- CONTENEUR PRINCIPAL -->
+    <div class="w-full max-w-6xl space-y-6">
+
+        <!-- HEADER OFFICIEL AVEC LOGO LOCAL A GAUCHE -->
+        <header class="w-full bg-bcso-card border border-bcso-cardBorder rounded-2xl p-5 md:p-6 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-5 w-full md:w-auto">
+                <!-- Image locale 'logo.png' placée dans le même dossier (GitHub root) -->
+                <div class="relative w-20 h-20 flex-shrink-0 flex items-center justify-center bg-bcso-dark/60 rounded-xl p-2 border border-bcso-cardBorder">
+                    <img src="logo.png" alt="Insigne Sheriff BCSO" class="max-w-full max-h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.7)]" onerror="this.onerror=null; this.src='https://placehold.co/100x100/131720/d4af37?text=BCSO+Logo';">
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-extrabold tracking-wide text-white uppercase flex items-center gap-2">
+                        San Andreas State Police
+                    </h1>
+                    <p class="text-xs md:text-sm font-semibold text-bcso-gold tracking-widest uppercase">
+                        Blaine County Sheriff's Office — Paleto Bay
+                    </p>
+                    <p class="text-[11px] text-gray-400 mt-1">Intranet d'enregistrement des patrouilles & suivi des effectifs</p>
+                </div>
+            </div>
+
+            <!-- BADGE STATUT DYNAMIQUE -->
+            <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                <div id="status-badge" class="px-4 py-2 rounded-full text-xs font-bold tracking-wider border bg-red-500/10 text-red-400 border-red-500/30 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+                    <span id="status-text">HORS SERVICE (10-10)</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- BARRE DE NAVIGATION (ONGLETS) -->
+        <nav class="flex gap-2 p-1.5 bg-bcso-card border border-bcso-cardBorder rounded-xl">
+            <button onclick="switchTab('agent-tab')" id="nav-agent-tab" class="tab-btn active flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all duration-200 text-center bg-bcso-gold text-black shadow-lg">
+                👮 Espace Agent & Pointeuse
+            </button>
+            <button onclick="switchTab('history-tab')" id="nav-history-tab" class="tab-btn flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all duration-200 text-center text-gray-400 hover:text-white hover:bg-bcso-cardBorder">
+                📜 Mon Historique Personnel
+            </button>
+            <button onclick="switchTab('em-tab')" id="nav-em-tab" class="tab-btn flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all duration-200 text-center text-bcso-gold border border-bcso-gold/30 hover:bg-bcso-gold/10">
+                🔒 Accès État-Major
+            </button>
+        </nav>
+
+        <!-- SECION 1: ESPACE AGENT & POINTEUSE -->
+        <main id="agent-tab" class="tab-content block space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- CARTE 1: IDENTIFICATION AGENT -->
+                <div class="bg-bcso-card border border-bcso-cardBorder rounded-2xl overflow-hidden shadow-lg">
+                    <div class="bg-bcso-headerBg px-5 py-3.5 border-b border-bcso-cardBorder flex items-center justify-between">
+                        <h2 class="text-sm font-bold text-bcso-gold uppercase tracking-wider flex items-center gap-2">
+                            <span>👤</span> Identification Officier
+                        </h2>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div>
+                            <label for="agent-name" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Nom & Prénom RP</label>
+                            <input type="text" id="agent-name" placeholder="Ex: John Doe" class="w-full bg-bcso-dark border border-bcso-cardBorder rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-bcso-gold transition-colors">
+                        </div>
+                        <div>
+                            <label for="agent-matricule" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Matricule</label>
+                            <input type="text" id="agent-matricule" placeholder="Ex: 42" class="w-full bg-bcso-dark border border-bcso-cardBorder rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-bcso-gold transition-colors">
+                        </div>
+                        <div>
+                            <label for="agent-grade" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Grade</label>
+                            <select id="agent-grade" class="w-full bg-bcso-dark border border-bcso-cardBorder rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-bcso-gold transition-colors">
+                                <option value="Deputy Trainee">Deputy Trainee</option>
+                                <option value="Deputy I">Deputy I</option>
+                                <option value="Deputy II">Deputy II</option>
+                                <option value="Caporal">Caporal</option>
+                                <option value="Caporal-Chef">Caporal-Chef</option>
+                                <option value="Sergent">Sergent</option>
+                                <option value="Sergent I">Sergent I</option>
+                                <option value="Sergent-Chef">Sergent-Chef</option>
+                                <option value="Lieutenant">Lieutenant</option>
+                                <option value="Capitaine">Capitaine</option>
+                                <option value="Under Sheriff">Under Sheriff</option>
+                                <option value="Sheriff">Sheriff</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARTE 2: CONFIGURATION PATROUILLE -->
+                <div class="bg-bcso-card border border-bcso-cardBorder rounded-2xl overflow-hidden shadow-lg">
+                    <div class="bg-bcso-headerBg px-5 py-3.5 border-b border-bcso-cardBorder flex items-center justify-between">
+                        <h2 class="text-sm font-bold text-bcso-gold uppercase tracking-wider flex items-center gap-2">
+                            <span>🚓</span> Configuration de Patrouille
+                        </h2>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div>
+                            <label for="unit-type" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Indicatif Unité</label>
+                            <select id="unit-type" class="w-full bg-bcso-dark border border-bcso-cardBorder rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-bcso-gold transition-colors">
+                                <option value="ADAM">ADAM (Patrouille Terrestre Duo/Trio)</option>
+                                <option value="LINCOLN">LINCOLN (Patrouille Terrestre Solo)</option>
+                                <option value="MARY">MARY (Unité Moto)</option>
+                                <option value="HENRY">HENRY (Unité Aérienne - Hélicoptère)</option>
+                                <option value="TANGO">TANGO (Unité Banalisée / Enquête)</option>
+                                <option value="SIERRA">SIERRA (Unité Canines / K9)</option>
+                                <option value="DAVID">DAVID (Unité SWAT / Interventions)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="unit-partner" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Coéquipier(s)</label>
+                            <input type="text" id="unit-partner" placeholder="Ex: Jane Doe (103) / Indiquer 'Aucun' si solo" class="w-full bg-bcso-dark border border-bcso-cardBorder rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-bcso-gold transition-colors">
+                        </div>
+                        <div>
+                            <label for="service-notes" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Notes de Patrouille / Bilan final</label>
+                            <input type="text" id="service-notes" placeholder="Ex: Interventions majeures, patrouille Paleto Bay / Sandy Shores" class="w-full bg-bcso-dark border border-bcso-cardBorder rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-bcso-gold transition-colors">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CARTE 3: HORODATEUR DE SERVICE INTERACTIF -->
+            <div class="bg-bcso-card border border-bcso-cardBorder rounded-2xl overflow-hidden shadow-xl">
+                <div class="bg-bcso-headerBg px-5 py-3.5 border-b border-bcso-cardBorder flex items-center justify-between">
+                    <h2 class="text-sm font-bold text-bcso-gold uppercase tracking-wider flex items-center gap-2">
+                        <span>⏱️</span> Horodateur de Service En Direct
+                    </h2>
+                    <span class="text-xs text-gray-400 font-mono" id="current-clock">--:--:--</span>
+                </div>
+                <div class="p-6 md:p-8 flex flex-col items-center justify-center space-y-6">
+                    <div id="main-timer" class="font-mono text-5xl md:text-7xl font-extrabold tracking-widest text-white drop-shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                        00:00:00
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3 w-full max-w-xl">
+                        <button onclick="startService()" class="flex-1 py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                            <span>▶</span> Prise de Service (10-8)
+                        </button>
+                        <button onclick="pauseService()" class="flex-1 py-3.5 px-4 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                            <span>⏸</span> Pause (10-6)
+                        </button>
+                        <button onclick="stopService()" class="flex-1 py-3.5 px-4 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                            <span>⏹</span> Fin de Service (10-10)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARTE 4: GENERATEUR RAPPORT DISCORD -->
+            <div class="bg-bcso-card border border-bcso-cardBorder rounded-2xl overflow-hidden shadow-lg">
+                <div class="bg-bcso-headerBg px-5 py-3.5 border-b border-bcso-cardBorder flex items-center justify-between">
+                    <h2 class="text-sm font-bold text-bcso-gold uppercase tracking-wider flex items-center gap-2">
+                        <span>📋</span> Export Compte-Rendu Discord
+                    </h2>
+                </div>
+                <div class="p-5 space-y-4">
+                    <button onclick="generateDiscordReport()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                        <span>⚡</span> Générer le Compte-Rendu Automatique
+                    </button>
+                    <textarea id="discord-output" rows="6" readonly placeholder="Cliquez sur le bouton ci-dessus pour générer votre mise en forme Discord..." class="w-full bg-bcso-dark border border-bcso-cardBorder rounded-xl p-4 font-mono text-xs text-emerald-400 focus:outline-none resize-none"></textarea>
+                    <button onclick="copyDiscordReport()" class="w-full py-3 bg-bcso-gold hover:bg-bcso-goldHover text-black font-extrabold rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                        <span>📋</span> Copier dans le Presse-Papier
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- SECTION 2: HISTORIQUE PERSONNEL AGENT -->
+        <section id="history-tab" class="tab-content hidden">
+            <div class="bg-bcso-card border border-bcso-cardBorder rounded-2xl overflow-hidden shadow-xl">
+                <div class="bg-bcso-headerBg px-5 py-4 border-b border-bcso-cardBorder flex items-center justify-between">
+                    <h2 class="text-sm font-bold text-bcso-gold uppercase tracking-wider flex items-center gap-2">
+                        <span>📜</span> Mon Historique Personnel de Service
+                    </h2>
+                    <span class="text-xs text-gray-400">Stocké localement sur cet appareil</span>
+                </div>
+                <div class="p-5 overflow-x-auto">
+                    <table class="w-full text-left text-xs text-gray-300">
+                        <thead class="bg-bcso-dark text-gray-400 uppercase font-bold border-b border-bcso-cardBorder">
+                            <tr>
+                                <th class="p-3.5">Date</th>
+                                <th class="p-3.5">Agent (Matricule)</th>
+                                <th class="p-3.5">Grade</th>
+                                <th class="p-3.5">Unité</th>
+                                <th class="p-3.5">Horaires</th>
+                                <th class="p-3.5">Durée Totale</th>
+                            </tr>
+                        </thead>
+                        <tbody id="agent-history-tbody" class="divide-y divide-bcso-cardBorder">
+                            <!-- Inscription JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: ESPACE ETAT-MAJOR (SECURISÉ PAR MOT DE PASSE 1499) -->
+        <section id="em-tab" class="tab-content hidden">
+            
+            <!-- ECRAN DE CONNEXION -->
+            <div id="em-login-view" class="max-w-md mx-auto my-8 bg-bcso-card border border-bcso-cardBorder rounded-2xl overflow-hidden shadow-2xl p-6 text-center space-y-5">
+                <!-- Image locale 'logo.png' pour la vue de connexion EM -->
+                <div class="w-24 h-24 mx-auto bg-bcso-dark/80 p-3 rounded-2xl border border-bcso-cardBorder flex items-center justify-center">
+                    <img src="logo.png" alt="Insigne BCSO" class="max-w-full max-h-full object-contain" onerror="this.onerror=null; this.src='https://placehold.co/100x100/131720/d4af37?text=BCSO+Logo';">
+                </div>
+                <div>
+                    <h2 class="text-lg font-extrabold text-white uppercase tracking-wider">Accès Sécurisé Commandement</h2>
+                    <p class="text-xs text-gray-400 mt-1">Espace réservé à l'État-Major du SASP / BCSO</p>
+                </div>
+                <div class="space-y-3 text-left">
+                    <label for="em-pass" class="block text-xs font-bold uppercase tracking-wider text-gray-400">Code d'accès État-Major</label>
+                    <input type="password" id="em-pass" placeholder="Entrez le mot de passe..." autocomplete="off" class="w-full bg-bcso-dark border border-bcso-cardBorder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-bcso-gold transition-colors text-center tracking-widest font-mono">
+                </div>
+                <button onclick="checkEmPassword()" class="w-full py-3 bg-bcso-gold hover:bg-bcso-goldHover text-black font-extrabold rounded-xl shadow-lg transition-all">
+                    Se Connecter
+                </button>
+                <div id="em-login-error" class="hidden text-xs font-bold text-rose-500 bg-rose-500/10 border border-rose-500/20 p-2.5 rounded-lg">
+                    ⚠️ Mot de passe incorrect. Accès refusé.
+                </div>
+            </div>
+
+            <!-- DASHBOARD ETAT-MAJOR (MASQUÉ PAR DÉFAUT) -->
+            <div id="em-dashboard-view" class="hidden space-y-6">
+                
+                <!-- CARTES STATISTIQUES -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-bcso-card border border-bcso-cardBorder p-5 rounded-2xl text-center">
+                        <span class="text-xs uppercase font-bold text-gray-400">Total Prises de Service</span>
+                        <div id="stat-total-shifts" class="text-3xl font-extrabold text-bcso-gold mt-1">0</div>
+                    </div>
+                    <div class="bg-bcso-card border border-bcso-cardBorder p-5 rounded-2xl text-center">
+                        <span class="text-xs uppercase font-bold text-gray-400">Heures Totales Enregistrées</span>
+                        <div id="stat-total-hours" class="text-3xl font-extrabold text-emerald-400 mt-1">0h 00m</div>
+                    </div>
+                    <div class="bg-bcso-card border border-bcso-cardBorder p-5 rounded-2xl text-center">
+                        <span class="text-xs uppercase font-bold text-gray-400">Agents Différents Enregistrés</span>
+                        <div id="stat-total-agents" class="text-3xl font-extrabold text-blue-400 mt-1">0</div>
+                    </div>
+                </div>
+
+                <!-- OUTILS FILTRES & EXPORT -->
+                <div class="bg-bcso-card border border-bcso-cardBorder rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto flex-1">
+                        <input type="text" id="filter-agent" onkeyup="renderEmTable()" placeholder="Filtrer par Nom ou Matricule..." class="bg-bcso-dark border border-bcso-cardBorder rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-bcso-gold flex-1">
+                        <select id="filter-unit" onchange="renderEmTable()" class="bg-bcso-dark border border-bcso-cardBorder rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-bcso-gold">
+                            <option value="ALL">Toutes les Unités</option>
+                            <option value="ADAM">ADAM</option>
+                            <option value="LINCOLN">LINCOLN</option>
+                            <option value="MARY">MARY</option>
+                            <option value="HENRY">HENRY</option>
+                            <option value="TANGO">TANGO</option>
+                            <option value="SIERRA">SIERRA</option>
+                            <option value="DAVID">DAVID</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                        <button onclick="exportCSV()" class="py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-2">
+                            <span>📥</span> Exporter Excel (CSV)
+                        </button>
+                        <button onclick="logoutEm()" class="py-2.5 px-4 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl shadow transition-all">
+                            Déconnexion
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TABLEAU GLOBAL -->
+                <div class="bg-bcso-card border border-bcso-cardBorder rounded-2xl overflow-hidden shadow-xl">
+                    <div class="bg-bcso-headerBg px-5 py-4 border-b border-bcso-cardBorder flex items-center justify-between">
+                        <h2 class="text-sm font-bold text-bcso-gold uppercase tracking-wider flex items-center gap-2">
+                            <span>📊</span> Registre Général des Effectifs — SASP Nord / BCSO
+                        </h2>
+                    </div>
+                    <div class="p-5 overflow-x-auto">
+                        <table class="w-full text-left text-xs text-gray-300">
+                            <thead class="bg-bcso-dark text-gray-400 uppercase font-bold border-b border-bcso-cardBorder">
+                                <tr>
+                                    <th class="p-3.5">Date</th>
+                                    <th class="p-3.5">Agent</th>
+                                    <th class="p-3.5">Grade</th>
+                                    <th class="p-3.5">Unité</th>
+                                    <th class="p-3.5">Horaires</th>
+                                    <th class="p-3.5">Durée</th>
+                                    <th class="p-3.5 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="em-history-tbody" class="divide-y divide-bcso-cardBorder">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- SCRIPT LOGIQUE APPLICATIVE -->
+    <script>
+        // Variables d'état
+        let timerInterval = null;
+        let seconds = 0;
+        let isRunning = false;
+        let startTime = null;
+
+        // Horloge temps réel
+        setInterval(() => {
+            const now = new Date();
+            const clockEl = document.getElementById('current-clock');
+            if (clockEl) {
+                clockEl.innerText = now.toLocaleTimeString('fr-FR');
+            }
+        }, 1000);
+
+        // Gestion du LocalStorage
+        function getShifts() {
+            try {
+                return JSON.parse(localStorage.getItem('sasp_bcso_shifts') || '[]');
+            } catch (e) {
+                return [];
+            }
         }
 
-        /* HEADER OFFICIEL AVEC IMAGE EN HAUT À GAUCHE */
-        header {
-            width: 100%;
-            max-width: 1100px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        function saveShift(shift) {
+            const shifts = getShifts();
+            shifts.unshift(shift);
+            localStorage.setItem('sasp_bcso_shifts', JSON.stringify(shifts));
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
+        function deleteShift(index) {
+            if (confirm("Confirmation État-Major : Voulez-vous supprimer définitivement cet enregistrement ?")) {
+                const shifts = getShifts();
+                shifts.splice(index, 1);
+                localStorage.setItem('sasp_bcso_shifts', JSON.stringify(shifts));
+                renderEmTable();
+                renderAgentHistory();
+            }
         }
 
-        .header-left img {
-            width: 75px;
-            height: 75px;
-            object-fit: contain;
-            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
+        // Horodateur
+        function updateTimerDisplay() {
+            const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+            const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+            const secs = String(seconds % 60).padStart(2, '0');
+            document.getElementById('main-timer').innerText = `${hrs}:${mins}:${secs}`;
         }
 
-        .header-title h1 {
-            font-size: 22px;
-            color: #fff;
-            letter-spacing: 0.5px;
+        function startService() {
+            if (!isRunning) {
+                const name = document.getElementById('agent-name').value.trim();
+                const mat = document.getElementById('agent-matricule').value.trim();
+                
+                if (!name || !mat) {
+                    alert("⚠️ Veuillez renseigner votre Nom RP et votre Matricule avant de prendre le service.");
+                    return;
+                }
+
+                isRunning = true;
+                startTime = new Date();
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    updateTimerDisplay();
+                }, 1000);
+
+                updateStatusBadge("EN SERVICE (10-8)", "bg-emerald-500/10 text-emerald-400 border-emerald-500/30", "bg-emerald-500");
+            }
         }
 
-        .header-title p {
-            font-size: 13px;
-            color: var(--accent-gold);
-            font-weight: 600;
+        function pauseService() {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+                updateStatusBadge("EN PAUSE (10-6)", "bg-amber-500/10 text-amber-400 border-amber-500/30", "bg-amber-500");
+            }
         }
 
-        .badge-status {
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+        function stopService() {
+            if (seconds > 0) {
+                clearInterval(timerInterval);
+                isRunning = false;
+                const endTime = new Date();
+
+                const hrs = Math.floor(seconds / 3600);
+                const mins = Math.floor((seconds % 3600) / 60);
+                const durationFormatted = `${hrs}h ${String(mins).padStart(2, '0')}m`;
+
+                const newShift = {
+                    date: startTime ? startTime.toLocaleDateString('fr-FR') : new Date().toLocaleDateString('fr-FR'),
+                    agent: document.getElementById('agent-name').value.trim(),
+                    matricule: document.getElementById('agent-matricule').value.trim(),
+                    grade: document.getElementById('agent-grade').value,
+                    unit: document.getElementById('unit-type').value,
+                    partner: document.getElementById('unit-partner').value.trim() || 'Aucun',
+                    start: startTime ? startTime.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}) : '--:--',
+                    end: endTime.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}),
+                    durationSeconds: seconds,
+                    durationFormatted: durationFormatted
+                };
+
+                saveShift(newShift);
+                renderAgentHistory();
+
+                seconds = 0;
+                updateTimerDisplay();
+                updateStatusBadge("HORS SERVICE (10-10)", "bg-red-500/10 text-red-400 border-red-500/30", "bg-red-500");
+
+                alert("✅ Fin de service enregistrée avec succès dans l'intranet.");
+            }
         }
 
-        .status-off { background: rgba(239, 68, 68, 0.2); color: var(--red); border: 1px solid var(--red); }
-        .status-on { background: rgba(16, 185, 129, 0.2); color: var(--green); border: 1px solid var(--green); }
-        .status-pause { background: rgba(245, 158, 11, 0.2); color: var(--orange); border: 1px solid var(--orange); }
-
-        /* NAVIGATION ONGLETS */
-        .nav-tabs {
-            width: 100%;
-            max-width: 1100px;
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+        function updateStatusBadge(text, badgeClasses, dotColorClass) {
+            const badge = document.getElementById('status-badge');
+            const statusText = document.getElementById('status-text');
+            badge.className = `px-4 py-2 rounded-full text-xs font-bold tracking-wider border flex items-center gap-2 ${badgeClasses}`;
+            badge.querySelector('span').className = `w-2.5 h-2.5 rounded-full animate-pulse ${dotColorClass}`;
+            statusText.innerText = text;
         }
 
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
+        // Compte-rendu Discord
+        function generateDiscordReport() {
+            const name = document.getElementById('agent-name').value.trim() || 'Non renseigné';
+            const mat = document.getElementById('agent-matricule').value.trim() || '---';
+            const grade = document.getElementById('agent-grade').value;
+            const unit = document.getElementById('unit-type').value;
+            const partner = document.getElementById('unit-partner').value.trim() || 'Aucun';
+            const duration = document.getElementById('main-timer').innerText;
+            const notes = document.getElementById('service-notes').value.trim() || 'Rien à signaler';
+
+            const text = `▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+# 📜 COMPTE-RENDU DE SERVICE — SASP NORD / BCSO
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+• **Officier :** ${name}
+• **Matricule :** #${mat}
+• **Grade :** ${grade}
+• **Unité :** ${unit}
+• **Coéquipier(s) :** ${partner}
+• **Temps de Service :** ${duration}
+• **Bilan / Notes :** ${notes}
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬`;
+
+            document.getElementById('discord-output').value = text;
         }
 
-        .tab-btn.active {
-            background: var(--accent-blue);
-            color: #fff;
-            border-color: var(--accent-blue);
+        function copyDiscordReport() {
+            const area = document.getElementById('discord-output');
+            if (area.value) {
+                area.select();
+                document.execCommand('copy');
+                alert("📋 Compte-rendu copié dans votre presse-papier !");
+            } else {
+                alert("⚠️ Veuillez d'abord générer le rapport.");
+            }
         }
 
-        .tab-btn.em-tab.active {
-            background: var(--accent-gold);
-            color: #000;
-            border-color: var(--accent-gold);
+        // Historique Personnel
+        function renderAgentHistory() {
+            const shifts = getShifts();
+            const tbody = document.getElementById('agent-history-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (shifts.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-gray-500">Aucune prise de service enregistrée.</td></tr>`;
+                return;
+            }
+
+            shifts.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-bcso-dark/50 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-3.5 font-medium">${s.date}</td>
+                    <td class="p-3.5"><span class="font-bold text-white">${s.agent}</span> <span class="text-gray-500">(#${s.matricule})</span></td>
+                    <td class="p-3.5">${s.grade}</td>
+                    <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-bcso-gold/10 text-bcso-gold font-bold border border-bcso-gold/20">${s.unit}</span></td>
+                    <td class="p-3.5 text-gray-400">${s.start} - ${s.end}</td>
+                    <td class="p-3.5 font-bold text-emerald-400 font-mono">${s.durationFormatted}</td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
-        /* CONTENU */
-        .tab-content {
-            width: 100%;
-            max-width: 1100px;
-            display: none;
+        // Authentification Etat-Major (Code 1499)
+        function checkEmPassword() {
+            const passInput = document.getElementById('em-pass');
+            const errorEl = document.getElementById('em-login-error');
+            
+            if (passInput.value.trim() === "1499") {
+                document.getElementById('em-login-view').classList.add('hidden');
+                document.getElementById('em-dashboard-view').classList.remove('hidden');
+                errorEl.classList.add('hidden');
+                passInput.value = '';
+                renderEmTable();
+            } else {
+                errorEl.classList.remove('hidden');
+            }
         }
 
-        .tab-content.active {
-            display: block;
+        function logoutEm() {
+            document.getElementById('em-pass').value = '';
+            document.getElementById('em-login-view').classList.remove('hidden');
+            document.getElementById('em-dashboard-view').classList.add('hidden');
         }
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+        // Tableau d'analyse EM
+        function renderEmTable() {
+            const shifts = getShifts();
+            const filterText = (document.getElementById('filter-agent').value || '').toLowerCase();
+            const filterUnit = document.getElementById('filter-unit').value;
+            
+            const tbody = document.getElementById('em-history-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            let totalSecs = 0;
+            let uniqueAgents = new Set();
+            let count = 0;
+
+            shifts.forEach((s, idx) => {
+                const matchText = (s.agent || '').toLowerCase().includes(filterText) || (s.matricule || '').toLowerCase().includes(filterText);
+                const matchUnit = filterUnit === 'ALL' || s.unit === filterUnit;
+
+                if (matchText && matchUnit) {
+                    count++;
+                    totalSecs += (s.durationSeconds || 0);
+                    uniqueAgents.add(s.matricule);
+
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-bcso-dark/50 transition-colors";
+                    tr.innerHTML = `
+                        <td class="p-3.5 font-medium">${s.date}</td>
+                        <td class="p-3.5"><span class="font-bold text-white">${s.agent}</span> <span class="text-gray-500">(#${s.matricule})</span></td>
+                        <td class="p-3.5 text-gray-300">${s.grade}</td>
+                        <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-bcso-gold/10 text-bcso-gold font-bold border border-bcso-gold/20">${s.unit}</span></td>
+                        <td class="p-3.5 text-gray-400">${s.start} - ${s.end}</td>
+                        <td class="p-3.5 font-bold text-emerald-400 font-mono">${s.durationFormatted}</td>
+                        <td class="p-3.5 text-right">
+                            <button onclick="deleteShift(${idx})" class="px-2.5 py-1 bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/30 rounded-lg text-[11px] font-bold transition-all">
+                                Supprimer
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+
+            document.getElementById('stat-total-shifts').innerText = count;
+            const h = Math.floor(totalSecs / 3600);
+            const m = Math.floor((totalSecs % 3600) / 60);
+            document.getElementById('stat-total-hours').innerText = `${h}h ${String(m).padStart(2, '0')}m`;
+            document.getElementById('stat-total-agents').innerText = uniqueAgents.size;
         }
 
-        .full-width {
-            grid-column: span 2;
+        // Exportation Excel CSV
+        function exportCSV() {
+            const shifts = getShifts();
+            if (shifts.length === 0) {
+                alert("⚠️ Aucun enregistrement disponible à exporter.");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,Date,Agent,Matricule,Grade,Unite,Equipiers,Debut,Fin,Duree\n";
+            shifts.forEach(s => {
+                csvContent += `"${s.date}","${s.agent}","${s.matricule}","${s.grade}","${s.unit}","${s.partner}","${s.start}","${s.end}","${s.durationFormatted}"\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Registre_Service_SASP_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
+        // Gestion des onglets
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Reinitialiser style des boutons
+            const btnAgent = document.getElementById('nav-agent-tab');
+            const btnHistory = document.getElementById('nav-history-tab');
+            const btnEm = document.getElementById('nav-em-tab');
+
+            [btnAgent, btnHistory, btnEm].forEach(b => {
+                b.className = "tab-btn flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all duration-200 text-center text-gray-400 hover:text-white hover:bg-bcso-cardBorder";
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+
+            if (tabId === 'agent-tab') {
+                btnAgent.className = "tab-btn active flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all duration-200 text-center bg-bcso-gold text-black shadow-lg";
+            } else if (tabId === 'history-tab') {
+                btnHistory.className = "tab-btn active flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all duration-200 text-center bg-bcso-gold text-black shadow-lg";
+                renderAgentHistory();
+            } else if (tabId === 'em-tab') {
+                btnEm.className = "tab-btn active flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all duration-200 text-center bg-bcso-gold text-black shadow-lg";
+            }
         }
 
-        .card-header {
-            background: var(--card-header);
-            padding: 14px 20px;
-            border-
+        // Initialisation
+        renderAgentHistory();
+    </script>
+</body>
+</html>
