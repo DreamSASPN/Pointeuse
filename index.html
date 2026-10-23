@@ -36,7 +36,7 @@
             align-items: center;
         }
 
-        /* HEADER OFFICIEL */
+        /* HEADER OFFICIEL AVEC BADGE BLAINE COUNTY */
         header {
             width: 100%;
             max-width: 1100px;
@@ -58,9 +58,10 @@
         }
 
         .header-left img {
-            width: 65px;
-            height: 65px;
+            width: 70px;
+            height: 70px;
             object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
         }
 
         .header-title h1 {
@@ -255,14 +256,20 @@
             background: rgba(255,255,255,0.02);
         }
 
-        /* Espace Connexion EM */
+        /* CONNEXION ETAT MAJOR */
         .em-login-box {
             max-width: 400px;
             margin: 40px auto;
             text-align: center;
         }
 
-        /* Cartes Statistiques EM */
+        .em-login-box img {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 15px;
+        }
+
+        /* STATISTIQUES EM */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -294,10 +301,10 @@
 </head>
 <body>
 
-    <!-- HEADER OFFICIEL -->
+    <!-- HEADER OFFICIEL AVEC IMAGE DE L'INSIGNE -->
     <header>
         <div class="header-left">
-            <img src="https://i.ibb.co/6y40F11/fCT1-Njz-400x400.png" alt="Insigne BCSO">
+            <img src="https://i.ibb.co/6y40F11/fCT1-Njz-400x400.png" alt="Insigne Sheriff Blaine County">
             <div class="header-title">
                 <h1>SAN ANDREAS STATE POLICE</h1>
                 <p>BLAINE COUNTY SHERIFF'S OFFICE — PALETO BAY</p>
@@ -351,7 +358,7 @@
             </div>
 
             <div class="card">
-                <div class="card-header">计时 Configuration de Patrouille</div>
+                <div class="card-header">🚓 Configuration de Patrouille</div>
                 <div class="card-body">
                     <div class="form-group">
                         <label for="unit-type">Indicatif Unité</label>
@@ -425,10 +432,11 @@
     <!-- 3. ESPACE ÉTAT-MAJOR (MOT DE PASSE: 1499) -->
     <div id="em-tab" class="tab-content">
         
-        <!-- CONNEXION EM -->
+        <!-- CONNEXION EM AVEC BADGE -->
         <div id="em-login-view" class="card em-login-box">
             <div class="card-header" style="justify-content: center;">🔒 Accès Sécurisé Commandement</div>
             <div class="card-body">
+                <img src="https://i.ibb.co/6y40F11/fCT1-Njz-400x400.png" alt="Insigne Sheriff BCSO">
                 <div class="form-group">
                     <label for="em-pass">Mot de Passe État-Major</label>
                     <input type="password" id="em-pass" placeholder="">
@@ -441,7 +449,6 @@
         <!-- TABLEAU DE BORD EM + HISTORIQUE GLOBAL -->
         <div id="em-dashboard-view" style="display: none;">
             
-            <!-- CARTES DE STATISTIQUES -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div>Prises de Service Enregistrées</div>
@@ -457,7 +464,6 @@
                 </div>
             </div>
 
-            <!-- FILTRES & CONTROLES -->
             <div class="card full-width" style="margin-bottom: 20px;">
                 <div class="card-header" style="justify-content: space-between;">
                     <span>🔎 Filtres d'Analyse & Gestion des Heures</span>
@@ -479,7 +485,6 @@
                 </div>
             </div>
 
-            <!-- HISTORIQUE GLOBAL ETAT-MAJOR -->
             <div class="card full-width">
                 <div class="card-header">📊 HISTORIQUE GLOBAL DE SERVICE — ÉTAT-MAJOR</div>
                 <div class="card-body">
@@ -496,7 +501,7 @@
                             </tr>
                         </thead>
                         <tbody id="em-history-tbody">
-                            <!-- Rempli dynamiquement en JS -->
+                            <!-- Rempli en JS -->
                         </tbody>
                     </table>
                 </div>
@@ -512,7 +517,6 @@
         let isRunning = false;
         let startTime = null;
 
-        // Stockage LocalStorage
         function getShifts() {
             return JSON.parse(localStorage.getItem('sasp_shifts') || '[]');
         }
@@ -533,7 +537,6 @@
             }
         }
 
-        // Timer
         function updateTimerDisplay() {
             const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
             const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
@@ -610,7 +613,6 @@
             }
         }
 
-        // Export Discord
         function generateDiscordReport() {
             const name = document.getElementById('agent-name').value || 'Non renseigné';
             const mat = document.getElementById('agent-matricule').value || '---';
@@ -636,7 +638,6 @@
             }
         }
 
-        // Rendu Historique Agent
         function renderAgentHistory() {
             const shifts = getShifts();
             const tbody = document.getElementById('agent-history-tbody');
@@ -656,7 +657,6 @@
             });
         }
 
-        // Authentification État-Major (Mot de passe: 1499)
         function checkEmPassword() {
             const pass = document.getElementById('em-pass').value;
             if (pass === "1499") {
@@ -675,7 +675,6 @@
             document.getElementById('em-login-error').style.display = 'none';
         }
 
-        // Rendu Tableau Historique État-Major
         function renderEmTable() {
             const shifts = getShifts();
             const filterText = document.getElementById('filter-agent').value.toLowerCase();
@@ -711,7 +710,6 @@
                 }
             });
 
-            // Statistiques calculées
             document.getElementById('stat-total-shifts').innerText = count;
             const h = Math.floor(totalSecs / 3600);
             const m = Math.floor((totalSecs % 3600) / 60);
@@ -719,7 +717,6 @@
             document.getElementById('stat-total-agents').innerText = uniqueAgents.size;
         }
 
-        // Export Excel CSV
         function exportCSV() {
             const shifts = getShifts();
             if (shifts.length === 0) {
@@ -741,7 +738,6 @@
             document.body.removeChild(link);
         }
 
-        // Changement d'onglets
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
